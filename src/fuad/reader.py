@@ -69,8 +69,14 @@ Extracts to current folder by default'''
         mode = 'x+' if not exist_ok else 'w+'
         for file_name in self.get_data_copy:
             old_fn = file_name
-            file_name = join_paths(directory, file_name)
+            file_name = join_paths(directory, old_fn)
             if self.is_file(old_fn):
+                if old_fn != basename(old_fn):
+                    try:
+                        makedirs(file_name, chmod_executable, exist_ok = True)
+                        remove_dir(file_name, ignore_errors = True)
+                    except BaseException: pass
+                    mode = 'w+'
                 with open(file_name, mode) as f:
                     f.write(self.get_file_content(old_fn))
             elif self.is_dir(old_fn):

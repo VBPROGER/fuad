@@ -1,0 +1,13 @@
+FUAD//Ϩ[meta]
+name = "files/test1.txt"
+type = "file"
+content = "Just%20some%20text%20here"Ϫ[meta]
+name = "files/morefiles/dog.txt"
+type = "file"
+content = "Another%20text"Ϫ[meta]
+name = "files/blank.txt"
+type = "file"
+content = "Nothing%20to%20see%20here%20%3A%29%0AYes%2C%20100%25."Ϫ[meta]
+name = "README.md"
+type = "file"
+content = "%23%20Congratulations%21%0A%3C%21--%20This%20is%20a%20comment.%20You%20will%20not%20see%20it%20on%20the%20screen%20%28just%20in%20the%20code%29.%20--%3E%0AYou%27ve%20just%20decoded%20the%20URL-encoded%20format.%3Cbr%3E%0A%3Ch2%3ESee%20you%20soon%21%3C%2Fh2%3E%0AHave%20a%20good%20day%21"
