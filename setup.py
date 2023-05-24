@@ -11,6 +11,6 @@ setup(
     author = 'VBPROGER',
     packages = find_packages(),
     package_dir = {'': 'src'},
-    install_requires = []
+    install_requires = ['toml>=0.10.2']
     # license = '...'
 )
