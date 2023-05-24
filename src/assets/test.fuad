@@ -1,0 +1,8 @@
+FUAD//Ϩ[meta]
+name = "text.txt"
+type = "file"
+content = "Hello%20World!"Ϫ[meta]
+name = "cool.txt"
+type = "file"Ϫ[meta]
+name = "afolder"
+type = "directory"
