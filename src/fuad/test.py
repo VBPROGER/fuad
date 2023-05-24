@@ -15,7 +15,6 @@ class TestFUAD(unittest.TestCase):
     def test_Reader(self):
         r = Reader(self.file_data)
         r.run_all()
-
         self.assertEqual(len(r.get_all_list), 3)
         try:
             meta = r.get_meta('text.txt')['123']

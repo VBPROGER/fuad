@@ -10,6 +10,7 @@ if __name__ != '__main__':
     ))
 
 def main(*args, **kwargs):
+    '''Parse arguments'''
     if ('-v' in args or '--verbose' in args):
         print(args)
     try: archive_name = args[1]

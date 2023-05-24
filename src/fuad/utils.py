@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import fuad.meta as meta
+from fuad.meta import chmod_executable
 from fuad.errors import *
 from urllib.parse import quote as encode_url
 from urllib.parse import unquote as decode_url
@@ -8,8 +9,6 @@ from toml import loads as load_toml # type: ignore
 from hashlib import sha256 as hashing_method # You can change the hashing method, but be ready for compatibility issues
 from os import getcwd, makedirs
 from os.path import commonprefix, commonpath, realpath, abspath, relpath, join as join_paths
-
-chmod_executable = 0o777
 
 getchr = lambda i = 0: stringize(chr(int(i) + 1000))
 getchr.__doc__ = 'Get character by it\'s index in the unicode.'
