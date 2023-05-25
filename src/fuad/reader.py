@@ -9,11 +9,18 @@ class Reader:
     def __init__(self, data, *args, **kwargs):
         self.data = data
     def check_magic(self, *args, **kwargs):
-        return self.data.startswith(magic['file']['start']).endswith(magic['file']['end'])
+        return (
+            self.data.startswith(magic['file']['start']) and
+            self.data.endswith(magic['file']['end'])
+        )
     def remove_magic(self, *args, **kwargs):
         return self.data.removeprefix(magic['file']['start']).removesuffix(magic['file']['end'])
     def split_data(self, *args, **kwargs):
-        return self.data.split(magic['separators']['data'])
+        return self.data.strip(
+            magic['separators']['data']
+        ).split(
+            magic['separators']['data']
+        )
     def turn_list_to_dict(self, index: int = 0, *args, **kwargs):
         return load_toml(self.data[index])
     def read(self, *args, **kwargs):
