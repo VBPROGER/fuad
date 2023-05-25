@@ -53,7 +53,7 @@ use `get_file_content` instead'''
         else: return got_meta[field]
     def get_raw_file_content(self, name: str = '') -> str:
         '''Get raw, uncleaned file content. Not recommended'''
-        if self.is_file(name): return self.get_meta_field(name, 'content')
+        if self.is_file(name): return self.get_meta_field(name, 'content', True)
         else: raise IsADirectoryError('"{}" is a directory'.format(name))
     def get_file_content(self, name: str = '') -> str:
         '''Get URL-decoded and html-decoded file content by path'''
@@ -91,10 +91,26 @@ Extracts to current folder by default'''
             else:
                 raise UnexpectedHandleError('Cannot extract the archive')
         return True
+    def add_meta(self, path: str = '', *args, **kwargs) -> bool:
+        '''Add metadata to data (archive)'''
+        if not path: return False
+        self.data[path] = {
+            'meta': {
+                'name': path
+            }
+        }
+        self.data[path]['meta'].update(kwargs)
+        return True
+    def add_file(self, path: str = '', content: str = '', *args, **kwargs):
+        '''Add file to archive'''
+        self.add_meta(path, content = content, type = 'file', **kwargs)
+    def add_directory(self, path: str = '', content: str = '', *args, **kwargs):
+        '''Add directory to archive'''
+        self.add_meta(path, type = 'directory', **kwargs)
     def sec_check_file_hashes(self, *args, **kwargs) -> bool:
         '''Check if file hashes match'''
         for path in self.get_data_copy:
-            self.sec_check_file_hash(path)
+            if path: self.sec_check_file_hash(path)
         return True
     def sec_check_file_hash(self, name: str = '') -> bool:
         '''Check if file hash matches'''
@@ -109,7 +125,7 @@ Extracts to current folder by default'''
         '''Protect all paths in archive to prevent path traversal attack'''
         new_data = self.get_data_copy
         for path in self.get_data:
-            new_data = self.sec_protect_path(path, new_data)
+            if path: new_data = self.sec_protect_path(path, new_data)
         return new_data
     def sec_protect_path(self, name: str = '', _data: dict = {}, *args, **kwargs) -> dict:
         '''Protect the specified path to prevent path traversal attack'''
@@ -128,11 +144,14 @@ Extracts to current folder by default'''
     def _sort(self, *args, **kwargs):
         '''Internal function to convert list with data to dictionary'''
         old_data = self.data
-        new_data = {}
-        for index, _ in enumerate(old_data):
-            value = old_data[index]
-            new_data[value['meta']['name']] = value
-        return new_data
+        if old_data:
+            new_data = {}
+            for index, _ in enumerate(old_data):
+                value = old_data[index]
+                if value: new_data[value['meta']['name']] = value
+            return new_data
+        else:
+            return old_data
     @property
     def get_data(self):
         '''Readonly property to get `data`'''
@@ -145,8 +164,33 @@ Extracts to current folder by default'''
     def get_all_list(self):
         '''Readonly property to get list of files and directories'''
         return list(self.get_data.keys())
+    @property
+    def get_values_list(self):
+        '''Readonly property to get data(s) of files and directories'''
+        return list(map(str, self.get_data.values()))
+    @property
+    def get_values_list_as_toml(self):
+        '''Readonly property to get data(s) of files and directories as TOML'''
+        def change_values(d: dict) -> dict:
+            name = d['meta']['name']
+            if self.is_file(name):
+                d['meta']['content'] = encode_all(self.get_file_content(name))
+            return d
+        return list(map(lambda got_dict: dump_toml(change_values(got_dict)).strip(), self.get_data.values()))
+    @property
+    def to_bin(self):
+        data_copy = self.get_data_copy
+        return (
+            magic['file']['start'] +
+            magic['separators']['data'].join(self.get_values_list_as_toml) +
+            magic['file']['end']
+        )
 class FileReader(Reader):
     '''Reader that accepts file names'''
-    def __init__(self, fn, mode: str = 'r+',*args, **kwargs):
+    def __init__(self, fn, mode: str = 'r+', *args, **kwargs):
+        self.fn = fn
         with open(stringize(fn), stringize(mode) or 'r+') as f:
             self.data = f.read()
+    def save_archive(self, override_fn: str = '', mode: str = 'x+', *args, **kwargs):
+        with open(stringize(override_fn or self.fn), stringize(mode) or 'x+') as f:
+            self.data = f.write(self.to_bin)

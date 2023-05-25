@@ -3,6 +3,7 @@ import unittest
 from os.path import join
 from fuad.reader import Reader
 from fuad.magic import magic
+from fuad.constants import *
 
 class TestFUAD(unittest.TestCase):
     file_data: str = ''
@@ -32,6 +33,16 @@ class TestFUAD(unittest.TestCase):
         self.assertTrue(r.is_file('text.txt'))
         self.assertFalse(r.is_dir('cool.txt'))
         print('`text.txt` file content:', r.get_file_content('text.txt'))
+        print('binary representation:', r.to_bin)
+
+        print('\nstarting next test')
+        r = Reader(empty_fuad_file)
+        r.run_all()
+        r.data = r.to_bin
+        r.run_all()
+        r.add_file('hello.txt', 'world')
+        r.add_directory('sup')
+        print('binary representatoin:', r.to_bin)
 
 if __name__ == '__main__':
     unittest.main()
