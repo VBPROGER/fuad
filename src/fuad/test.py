@@ -33,7 +33,7 @@ class TestFUAD(unittest.TestCase):
         self.assertTrue(r.is_file('text.txt'))
         self.assertFalse(r.is_dir('cool.txt'))
         print('`text.txt` file content:', r.get_file_content('text.txt'))
-        print('binary representation:', r.to_bin)
+        print('binary representation #1:', r.to_bin)
 
         print('\nstarting next test')
         r = Reader(empty_fuad_file)
@@ -42,7 +42,7 @@ class TestFUAD(unittest.TestCase):
         r.run_all()
         r.add_file('hello.txt', 'world')
         r.add_directory('sup')
-        print('binary representatoin:', r.to_bin)
+        print('binary representation #2:', r.to_bin)
 
 if __name__ == '__main__':
     unittest.main()
